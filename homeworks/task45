@@ -1,0 +1,101 @@
+#Python Application hw
+
+import pyautogui
+from time import sleep
+pyautogui.PAUSE = 1
+
+#hw4 draw Rokumonsen/Ichimonsen/Sanjurokumonsen
+#開啟小畫家
+#pyautogui.press('shift') #如果會卡中文輸入法，請記得切換，可去除開頭 #
+pyautogui.hotkey('win')
+pyautogui.typewrite('paint')
+pyautogui.press('enter')
+pyautogui.hotkey('win', 'up')
+
+#draw
+##choose a color
+pyautogui.click(1230, 130) #gold
+#initial position
+x = 100
+y = 300
+for i in range(2):
+    for j in range(3):
+        ##draw a circle
+        pyautogui.click(600, 100) #oval
+        pyautogui.moveTo(x, y) #(100, 300)
+        pyautogui.doubleClick(x, y)
+        pyautogui.dragTo(x+150, y+150) #(250, 450)
+        ##draw a rectangle
+        pyautogui.click(630, 100) #rectangle
+        pyautogui.moveTo(x+50, y+50) #(150, 350)
+        pyautogui.doubleClick(x+50, y+50)
+        pyautogui.dragTo(x+100, y+100) #(200, 400)
+        ##fill with color
+        pyautogui.click(380, 110)
+        pyautogui.click(x+125, y+125) #(225, 425)
+        ##draw the next one
+        x += 200
+    x = 100
+    y += 200
+
+#open a new file for hw5
+pyautogui.keyDown('ctrl')
+pyautogui.keyDown('n')
+pyautogui.keyUp('n')
+pyautogui.keyUp('ctrl')
+#do not save the file
+pyautogui.press('right')
+pyautogui.press('enter')
+
+#hw5 draw EU flag
+pyautogui.click(600, 155) #star
+def drawStar(i, j): #draw a star
+    pyautogui.moveTo(x[i], y[j])
+    pyautogui.doubleClick(x[i], y[j])
+    pyautogui.dragTo(x[i]+40, y[j]+40)
+##positions for the stars
+x = [575, 675, 748, 775, 475, 402, 375]
+y = [260, 287, 360, 460, 560, 633, 660]
+##color for the stars
+pyautogui.click(800, 125) #fill
+pyautogui.click(800, 195) #solid
+pyautogui.click(980, 125) #color 1
+pyautogui.click(1230, 130) #gold
+pyautogui.click(1050, 125) #color 2
+pyautogui.click(1230, 130) #gold
+for j in range(7):
+    if (j == 0 or j == 6):
+        i = 0
+        drawStar(i, j)
+    elif (j == 1 or j == 5):
+        i = 1
+        drawStar(i, j)
+        i = 4
+        drawStar(i, j)
+    elif (j == 2 or j == 4):
+        i = 2
+        drawStar(i, j)
+        i = 5
+        drawStar(i, j)
+    elif j == 3:
+        i = 3
+        drawStar(i, j)
+        i = 6
+        drawStar(i, j)
+pyautogui.click(900, 700)
+##draw a rectangle
+pyautogui.click(630, 100) #rectangle
+pyautogui.click(800, 125) #fill
+pyautogui.click(800, 160) #no fill
+pyautogui.click(980, 125) #color 1
+pyautogui.click(1360, 95) #indigo
+pyautogui.moveTo(220, 220)
+pyautogui.doubleClick(220, 220)
+pyautogui.dragTo(980, 760)
+##color for the rectangle
+pyautogui.click(380, 110) #fill with color
+pyautogui.click(980, 125) #color 1
+pyautogui.click(1360, 95) #indigo
+pyautogui.click(1050, 125) #color 2
+pyautogui.click(1360, 95) #indigo
+pyautogui.click(860, 700)
