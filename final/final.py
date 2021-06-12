@@ -24,7 +24,8 @@ def func(update, context):
         context.bot.send_message(chat_id=update.effective_chat.id,
                                  text="指令\n/start: 開始遊戲\n/start R C k: 指定盤面規格\n/open (x, y): 選擇想打開的位置\n按鈕\n[重玩] 重玩這一局")
     elif update.callback_query.data == 'rules':
-        context.bot.send_message(chat_id=update.effective_chat.id, text="規格\n-盤面大小: 8 <= R, C <= 15\n-地雷數量: 不超過總格數")
+        context.bot.send_message(chat_id=update.effective_chat.id,
+                                 text="規格\n-盤面大小: 8 <= R, C <= 15\n-地雷數量: 不超過總格數\n-預設: R = 8, C = 9, k = 10")
     elif update.callback_query.data == 'replay':
         context.bot.send_message(chat_id=update.effective_chat.id, text="Replay the game!")
         global started
@@ -93,8 +94,6 @@ def game_over_reveal():
 def update_board(m, n):
     if m < 0 or m >= R or n < 0 or n >= C:  # out of the board
         return
-    # if revealed[m][n]:  # the spot has already been revealed
-    #     return
     if board[m][n] != '*':  # reveal the spot if it is not a bomb
         revealed[m][n] = True
     if board[m][n] == 0:
@@ -130,11 +129,9 @@ def start(update, context):
     context.bot.send_message(
         chat_id=update.effective_chat.id, text='Start the game!'
     )
-    global cmd
     cmd = update.message.text
     global R, C, k
     R, C, k = 8, 9, 10  # default board
-    init_board()
     tokens = cmd.split()
     if cmd == '/start':
         R, C, k = 8, 9, 10
@@ -180,7 +177,11 @@ def open_cell(update, context):
             )
         tokens = cmd.split()
         r, c = eval(cmd[6:])
-        if len(tokens) == 3:  # eg: /open (3, 4)
+        if r <= 0 or r > R or c <= 0 or c > C:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id, text='Unsupported command: ' + cmd + '. The spot is out of range.'
+            )
+        elif len(tokens) == 3:  # eg: /open (3, 4)
             if board[r - 1][c - 1] == '*':  # boom
                 context.bot.send_message(
                     chat_id=update.effective_chat.id, text='Game Over :('
@@ -227,10 +228,6 @@ def open_cell(update, context):
     except:
         context.bot.send_message(
             chat_id=update.effective_chat.id, text='Unsupported command: ' + cmd
-        )
-    if r <= 0 or r > R or c <= 0 or c > C:
-        context.bot.send_message(
-            chat_id=update.effective_chat.id, text='Unsupported command: ' + cmd + '. The spot is out of range.'
         )
 
 
