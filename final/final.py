@@ -71,14 +71,14 @@ def show_board():
     return show_txt
 
 
-def reveal_board():  # reveal the whole board
+def reveal_board():  # reveal the whole board -> mainly for debugging
     columns = []
     for board_row, revealed_row in zip(board, revealed):
         columns.append([board_row[i] for i in range(C)])
     show_txt = ''
     for i in range(R):
         for j in range(C):
-            show_txt = show_txt + ' ' + str(board[i][j]) + ' '
+            show_txt += ' ' + str(board[i][j]) + ' '
         show_txt += '\n'
     return show_txt
 
@@ -112,7 +112,7 @@ def update_board(m, n):
                 break
 
 
-started = 0
+started = 0  # to record whether the game has started or not
 
 
 def start(update, context):
@@ -134,7 +134,6 @@ def start(update, context):
     R, C, k = 8, 9, 10  # default board
     tokens = cmd.split()
     if cmd == '/start':
-        R, C, k = 8, 9, 10
         context.bot.send_message(
             chat_id=update.effective_chat.id,
             text='Set the board with default: R=' + str(R) + ', C=' + str(C) + ', k=' + str(k)
@@ -151,7 +150,6 @@ def start(update, context):
                 chat_id=update.effective_chat.id, text='Set the board: R=' + str(R) + ', C=' + str(C) + ', k=' + str(k)
             )
     else:
-        R, C, k = 8, 9, 10  # default
         context.bot.send_message(
             chat_id=update.effective_chat.id, text='Unsupported command: ' + cmd + '. Set the board with default'
         )
@@ -175,6 +173,7 @@ def open_cell(update, context):
             context.bot.send_message(
                 chat_id=update.effective_chat.id, text='The game has not started. Type "/start" to play. '
             )
+            return
         tokens = cmd.split()
         r, c = eval(cmd[6:])
         if r <= 0 or r > R or c <= 0 or c > C:
@@ -199,9 +198,10 @@ def open_cell(update, context):
                     ]])
                 )
                 return
-            if revealed[r-1][c-1]:
+            if revealed[r - 1][c - 1]:
                 context.bot.send_message(
-                    chat_id=update.effective_chat.id, text='('+str(r)+', '+str(c)+') has already been revealed. '
+                    chat_id=update.effective_chat.id,
+                    text='(' + str(r) + ', ' + str(c) + ') has already been revealed. '
                 )
             else:
                 update_board(r - 1, c - 1)
@@ -211,7 +211,7 @@ def open_cell(update, context):
             )
             if flag:
                 context.bot.send_message(
-                    chat_id=update.effective_chat.id, text='You win!'
+                    chat_id=update.effective_chat.id, text='You win!\n' + reveal_board()
                 )
                 started = 0
                 context.bot.send_message(
